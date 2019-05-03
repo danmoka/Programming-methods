@@ -10,7 +10,7 @@ namespace searchAlgorithmsOfSubstring
     {
         static void Main(string[] args)
         {
-            RabinKarp karp = new RabinKarp();
+            IStringSearcher karp = new Boyer_Moore();
 
             foreach (var el in karp.Find("qwertyuiop[asdfghjkl;zxcvbnm,wertyuiopsdfghjmk,zxabcabvbn m", "ab"))
             {

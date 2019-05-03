@@ -20,17 +20,6 @@ namespace searchAlgorithmsOfSubstring
         private long[] _hashPrefixText;
         private long _hashSubString;
 
-
-        //public RabinKarp(string text, string subString)
-        //{
-        //    _text = text;
-        //    _subString = subString;
-        //    _textLength = text.Length;
-        //    _subStringLength = subString.Length;
-
-        //    SetParameters(text, subString);
-        //}
-
         public RabinKarp() { }
 
         private void SetParameters(string text, string subString)
