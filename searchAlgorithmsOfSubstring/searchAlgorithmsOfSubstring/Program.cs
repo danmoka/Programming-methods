@@ -10,9 +10,9 @@ namespace searchAlgorithmsOfSubstring
     {
         static void Main(string[] args)
         {
-            RabinKarp karp = new RabinKarp("qwertyuiop[asdfghjkl;zxcvbnm,wertyuiopsdfghjmk,zxabcabvbn m", "ab");
+            RabinKarp karp = new RabinKarp();
 
-            foreach (var el in karp.Find())
+            foreach (var el in karp.Find("qwertyuiop[asdfghjkl;zxcvbnm,wertyuiopsdfghjmk,zxabcabvbn m", "ab"))
             {
                 Console.WriteLine(el);
             }

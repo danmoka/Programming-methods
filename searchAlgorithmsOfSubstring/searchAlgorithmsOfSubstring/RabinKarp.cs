@@ -21,18 +21,24 @@ namespace searchAlgorithmsOfSubstring
         private long _hashSubString;
 
 
-        public RabinKarp(string text, string subString)
+        //public RabinKarp(string text, string subString)
+        //{
+        //    _text = text;
+        //    _subString = subString;
+        //    _textLength = text.Length;
+        //    _subStringLength = subString.Length;
+
+        //    SetParameters(text, subString);
+        //}
+
+        public RabinKarp() { }
+
+        private void SetParameters(string text, string subString)
         {
             _text = text;
             _subString = subString;
             _textLength = text.Length;
             _subStringLength = subString.Length;
-
-            SetParameters(text, subString);
-        }
-
-        private void SetParameters(string text, string subString)
-        {
             _paramsDeg = new long[_textLength];
             _paramsDeg[0] = 1;
 
@@ -54,8 +60,10 @@ namespace searchAlgorithmsOfSubstring
                 _hashSubString += (subString[i] - 'a' + 1) * _paramsDeg[i];
         }
 
-        public IEnumerable<int> Find()
+        public IEnumerable<int> Find(string text, string subString)
         {
+            SetParameters(text, subString);
+
             long cur_h = _hashPrefixText[0];
 
             for (int i = 1; i < _textLength; i++)
@@ -64,6 +72,7 @@ namespace searchAlgorithmsOfSubstring
                 {
                     cur_h = _hashPrefixText[i + _subStringLength - 1];
                     cur_h -= _hashPrefixText[i - 1];
+
                     // приводим хэши к одной степени и сравниваем
                     if (cur_h == _hashSubString * _paramsDeg[i])
                         yield return i;

@@ -8,6 +8,6 @@ namespace searchAlgorithmsOfSubstring
 {
     public interface IStringSearcher
     {
-        IEnumerable<int> Find();
+        IEnumerable<int> Find(string haystack, string needle);
     }
 }
