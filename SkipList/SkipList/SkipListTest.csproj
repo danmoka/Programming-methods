@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SkipListLib\SkipListLib.csproj">
+      <Project>{3c5cbc8d-30fa-4262-85b5-75b4e2dfec8e}</Project>
+      <Name>SkipListLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
