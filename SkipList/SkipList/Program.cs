@@ -11,7 +11,6 @@ using System.Threading.Tasks;
     выполняет поиск каждого элемента массива и замеряет общее время;
    - создайте SortedList на основе чисел массива. Также удалите из этого контейнера числа, 
     которые находились в массиве на месте с 5000 до 7000 и замерьте общее время работы с SortedList. 
-
  */
 namespace SkipListLab
 {
@@ -19,73 +18,68 @@ namespace SkipListLab
     {
         static void Main(string[] args)
         {
-            int n = 10000;
-            int startIndexToRemove = 5000;
-            int endIngexToRemove = 7000;
+            const int n = 10000;
+            int testTimes = 20;
+            const int startIndexToRemove = 5000;
+            const int endIngexToRemove = 7000;
             int[] numbers = GetNumbers(n).ToArray();
 
-            SkipList<int,int> skipList = new SkipList<int, int>();
-            var skipTime = TestForSkipList(startIndexToRemove, endIngexToRemove, numbers, skipList);
-            IDictionary<int, int> sortedList = new SortedList<int, int>();
-            var sortedTime = TestForSortedList(startIndexToRemove, endIngexToRemove, numbers, sortedList);
-            var diff = sortedTime / skipTime;
+            double avSkipTime = 0;
+            double avSortedTime = 0;
 
-            Console.WriteLine("Skiplist: {0}mc faster then sortedlist: {1}mc by {2} times", skipTime, sortedTime, string.Format("{0:N2}", diff));
+            for (int i = 0; i < testTimes; i++)
+            {
+                IAction<int, int> skipList = new SkipList<int, int>();
+                IAction<int, int> sortedList = new SortedListAdapter<int, int>();
+
+                avSkipTime += TestForIAction(startIndexToRemove, endIngexToRemove, numbers, skipList);
+                avSortedTime += TestForIAction(startIndexToRemove, endIngexToRemove, numbers, sortedList);
+            }
+
+            avSkipTime = avSkipTime / testTimes;
+            avSortedTime = avSortedTime / testTimes;
+            var diff = avSortedTime / avSkipTime;
+
+            Console.WriteLine("Skiplist: {0}mc faster then sortedlist: {1}mc by {2} times", avSkipTime, avSortedTime, string.Format("{0:N2}", diff));
 
             //SimpleTest();
         }
 
-        private static double TestForSkipList(int startIndexToRemove, int endIngexToRemove, int[] numbers, SkipList<int, int> skipList)
+        private static double TestForIAction(int startIndexToRemove, int endIngexToRemove, int[] numbers, IAction<int, int> list)
         {
             var timer = new Stopwatch();
 
             timer.Start();
 
             for (int i = 0; i < numbers.Length; i++)
-                skipList.Add(numbers[i], 1);
+                list.Add(numbers[i], 1);
 
             for (int i = startIndexToRemove; i < endIngexToRemove; i++)
-                skipList.Remove(numbers[i]);
+                list.Remove(numbers[i]);
 
             for (int i = 0; i < numbers.Length; i++)
-                skipList.ContainsKey(numbers[i]);
+                list.ContainsKey(numbers[i]);
 
             timer.Stop();
 
             return timer.ElapsedMilliseconds;
         }
 
-        private static double TestForSortedList(int startIndexToRemove, int endIngexToRemove, int[] numbers, IDictionary<int, int> sortedList)
+        private static int[] GetNumbers(int n)
         {
-            var timer = new Stopwatch();
-
-            timer.Start();
-
-            for (int i = 0; i < numbers.Length; i++)
-                sortedList.Add(numbers[i], 1);
-
-            for (int i = startIndexToRemove; i < endIngexToRemove; i++)
-                sortedList.Remove(numbers[i]);
-
-            for (int i = 0; i < numbers.Length; i++)
-                sortedList.ContainsKey(numbers[i]);
-
-            timer.Stop();
-
-            return timer.ElapsedMilliseconds;
-        }
-
-        private static IEnumerable<int> GetNumbers(int n)
-        {
-            HashSet<int> uniqNumbs = new HashSet<int>();
-            Random rd = new Random();
             int[] array = new int[n];
+            var range = 100000;
+            var unusedNumbers = Enumerable.Range(0, range).ToList();
+            var rand = new Random();
 
-            while (uniqNumbs.Count != n)
-                uniqNumbs.Add(rd.Next());
+            for (int i = 0; i < n; i++)
+            {
+                var pos = rand.Next(0, unusedNumbers.Count);
+                array[i] = unusedNumbers[pos];
+                unusedNumbers.RemoveAt(pos);
+            }
 
-            foreach (var el in uniqNumbs)
-                yield return el;
+            return array;
         }
 
         private static void SimpleTest()

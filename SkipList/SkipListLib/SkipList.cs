@@ -18,7 +18,7 @@ namespace SkipListLib
     {
         public TKey Key { get; set; }
         public TValue Value { get; set; }
-        public bool IsEmpty { get; set; } = false; // метка, что узел является пустым
+        public bool IsEmpty { get; set; } = true; // метка, что узел является пустым
         public Node<TKey, TValue> Next = null, Up = null, Down = null; // ссылки на элементы: на этом уровне (следующий), выше и ниже
 
         public Node() { }
@@ -44,7 +44,7 @@ namespace SkipListLib
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class SkipList<TKey, TValue> where TKey : IComparable<TKey>
+    public class SkipList<TKey, TValue>:IAction<TKey, TValue> where TKey : IComparable<TKey>
     {
         /*Список с пропусками (англ. Skip List) — вероятностная структура данных, основанная на
           нескольких параллельных отсортированных связных списках с эффективностью,
@@ -106,26 +106,16 @@ namespace SkipListLib
                 более высоком списке. Таким образом, общие ожидаемые затраты на поиск — log1/p (n)/p = O(log(n))
                 в случае константного p.
              */
-        Node<TKey,TValue> currentNode = node;
+            Node<TKey,TValue> currentNode = node;
 
             // пока не дошли до хвоста и ключ не больше искомого...
             while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) <= 0)
                 currentNode = currentNode.Next; // переходим к следующему на текущем уровне
 
-            // если спустились до нижнего уровня, то...
-            if (currentNode.Down == null)
-            {
-                if (currentNode.Next == _tail)
-                    return null;
+            if (currentNode.Down == null || (currentNode.Key.CompareTo(key) == 0 && !currentNode.IsEmpty))
+                return currentNode;
 
-                return currentNode; // элемент найден
-            }
-
-            // если ключи совпали и узел не помечен как пустой, то...
-            if ((currentNode.Key.CompareTo(key) == 0 && !currentNode.IsEmpty))
-                return currentNode; // элемент найден
-
-            return Find(currentNode.Down, key); // иначе спускаемся на уровень ниже и продолжаем поиск
+            return Find(currentNode.Down, key);
         }
 
         public string Find(TKey key)
@@ -200,9 +190,8 @@ namespace SkipListLib
         /// <returns> True, если элемент содержится в коллекции, false - иначе </returns>
         public bool ContainsKey(TKey key)
         {
-            var node = Find(_head[_curLevel], key);
-
-            return node != null;
+            Node<TKey, TValue> node = Find(_head[_curLevel], key);
+            return node.Key.CompareTo(key) == 0 ? true : false;
         }
 
         public void Remove(TKey key)
