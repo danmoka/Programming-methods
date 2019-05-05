@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BinaryHeapLib\BinaryHeapLib.csproj">
+      <Project>{2E3E65CC-CF63-4B49-BE76-9226E458CD34}</Project>
+      <Name>BinaryHeapLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
