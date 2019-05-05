@@ -17,6 +17,10 @@ namespace BinaryHeapLib
     /// </summary>
     public class BinaryHeap<T> where T : IComparable<T>
     {
+        /*Двоичная куча представляет собой полное бинарное дерево, 
+         * для которого выполняется основное свойство кучи: 
+         * приоритет каждой вершины больше приоритетов её потомков.
+         */
         private List<T> _heap;
         public int Count
         {

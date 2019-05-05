@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*TODO:
+ Допишите   класс SkipList<TKey, TValue>, который содержит открытые методы: 
+ удаления элемента, поиска элемента по ключу, вставки элемента и необходимые внутренние методы.
+ */
 namespace SkipListLib
 {
     /// <summary>
@@ -43,10 +46,19 @@ namespace SkipListLib
     /// <typeparam name="TValue"></typeparam>
     public class SkipList<TKey, TValue> where TKey : IComparable<TKey>
     {
+        /*Список с пропусками (англ. Skip List) — вероятностная структура данных, основанная на
+          нескольких параллельных отсортированных связных списках с эффективностью,
+          сравнимой с двоичным деревом (порядка O(log n) среднее время для большинства
+          операций).Вставка, поиск и удаление выполняются за логарифмическое случайное время.*/
+
         public int Count { get; private set; } // количество элементов в СкипЛисте
         private int _maxLevel; // максимально возможный уровень "башни"
+                               // чем больше уровень, тем более список на этом уровне разрежен по сравнению с нижележащими.
+                               //Эта разреженность наряду с вероятностной природой дает оценку сложности поиска O(log N), — такую же, 
+                               //как для бинарных самобалансирующихся деревьев.
         private int _curLevel; // текущей уровень заполненности
-        private double _probability; // элемент в i-м слое появляется в i+1-м слое с некоторой фиксированной вероятностью _probability 
+        private double _probability; // элемент в i-м слое появляется в i+1-м слое с некоторой фиксированной вероятностью _probability. 
+                                     // В среднем каждый элемент встречается в 1/(1-p) списках,
         private Random _rd;
 
         private Node<TKey, TValue>[] _head; // "башня - голова"
@@ -88,13 +100,19 @@ namespace SkipListLib
         /// <returns> Искомый узел </returns>
         private Node<TKey, TValue> Find(Node<TKey, TValue> node, TKey key)
         {
-            Node<TKey,TValue> currentNode = node;
+            /*  Ожидаемое число шагов
+                в каждом связном списке 1/p, что можно увидеть просматривая путь поиска назад с
+                целевого элемента пока не будет достигнут элемент, который появляется в следующем
+                более высоком списке. Таким образом, общие ожидаемые затраты на поиск — log1/p (n)/p = O(log(n))
+                в случае константного p.
+             */
+        Node<TKey,TValue> currentNode = node;
 
             // пока не дошли до хвоста и ключ не больше искомого...
             while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) <= 0)
                 currentNode = currentNode.Next; // переходим к следующему на текущем уровне
 
-            // если успустились до нижнего уровня, то...
+            // если спустились до нижнего уровня, то...
             if (currentNode.Down == null)
             {
                 if (currentNode.Next == _tail)
@@ -131,16 +149,15 @@ namespace SkipListLib
                 while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) < 0)
                     currentNode = currentNode.Next;
 
-                if (currentNode.Next.Key.CompareTo(key) == 0)
+                if (currentNode.Next.Key.CompareTo(key) == 0 && !currentNode.Next.IsEmpty)
                     throw new ArgumentException("Key must be unique");
 
                 previousItems[i] = currentNode;
                 currentNode = currentNode.Down;
-            }
-
-            // подбрасываем монетку, чтобы понять на какую высоту поднимется новый узел 
+            }      
             int height = 0; // высота башни для нового элемента
 
+            // подбрасываем монетку, чтобы понять на какую высоту поднимется новый узел 
             while (_rd.NextDouble() < _probability && height < _maxLevel - 1)
                 height++;
 
@@ -160,7 +177,7 @@ namespace SkipListLib
 
             previousItems[0].Next = newItem;
 
-            // вставляем новый узел на все уровни от нижнего до height
+            // вставляем новый узел на все уровни от нижнего до height. Перекидываем ссылки ->  -> ^ |
             for (int i = 1 ; i <= height; i++)
             {
                 newItem = new Node<TKey, TValue>(key, value)
@@ -176,7 +193,12 @@ namespace SkipListLib
             Count++;
         }
 
-        public bool Contains(TKey key)
+        /// <summary>
+        /// Данный метод выполняет поиск по ключу
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns> True, если элемент содержится в коллекции, false - иначе </returns>
+        public bool ContainsKey(TKey key)
         {
             var node = Find(_head[_curLevel], key);
 
@@ -191,29 +213,29 @@ namespace SkipListLib
 
         private void Remove(Node<TKey, TValue> node, TKey key)
         {
-            var current = node;
+            Node<TKey, TValue> currentNode = node;
 
-            while (current.Next != _tail && current.Next.Key.CompareTo(key) < 0)
-                current = current.Next;
+            while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) < 0)
+                currentNode = currentNode.Next;
 
-            if (current.Down != null)
-                Remove(current.Down, key);
+            if (currentNode.Down != null)
+                Remove(currentNode.Down, key);
 
             // перекидываем ссылки
-            if (current.Next != _tail && current.Next.Key.CompareTo(key) == 0)
-                current.Next = current.Next.Next;
+            if (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) == 0)
+                currentNode.Next = currentNode.Next.Next;
         }
 
         public void Print()
         {
             for (int i = _curLevel; i >= 0; i--)
             {
-                var current = _head[i].Next;
+                var currentNode = _head[i].Next;
 
-                while (current != _tail)
+                while (currentNode != _tail)
                 {
-                    Console.Write("{0} ",current.Key);
-                    current = current.Next;
+                    Console.Write("{0} ",currentNode.Key);
+                    currentNode = currentNode.Next;
                 }
 
                 Console.WriteLine();
