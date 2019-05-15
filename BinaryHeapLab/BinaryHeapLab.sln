@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryHeapLab", "BinaryHeap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryHeapLib", "BinaryHeapLib\BinaryHeapLib.csproj", "{2E3E65CC-CF63-4B49-BE76-9226E458CD34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestBinHeap", "UnitTestBinHeap\UnitTestBinHeap.csproj", "{772CEBF8-1044-479B-B142-E39BF5CA9CF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2E3E65CC-CF63-4B49-BE76-9226E458CD34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3E65CC-CF63-4B49-BE76-9226E458CD34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3E65CC-CF63-4B49-BE76-9226E458CD34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772CEBF8-1044-479B-B142-E39BF5CA9CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772CEBF8-1044-479B-B142-E39BF5CA9CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772CEBF8-1044-479B-B142-E39BF5CA9CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772CEBF8-1044-479B-B142-E39BF5CA9CF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

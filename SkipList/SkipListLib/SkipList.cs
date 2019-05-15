@@ -57,7 +57,7 @@ namespace SkipListLib
                                //Эта разреженность наряду с вероятностной природой дает оценку сложности поиска O(log N), — такую же, 
                                //как для бинарных самобалансирующихся деревьев.
         private int _curLevel; // текущей уровень заполненности
-        private double _probability; // элемент в i-м слое появляется в i+1-м слое с некоторой фиксированной вероятностью _probability. 
+        private double _probability; // элемент в i-м слое появляется в i+1-м слое с некоторой фиксированной вероятностью p = _probability. 
                                      // В среднем каждый элемент встречается в 1/(1-p) списках,
         private Random _rd;
 
@@ -103,13 +103,13 @@ namespace SkipListLib
             /*  Ожидаемое число шагов
                 в каждом связном списке 1/p, что можно увидеть просматривая путь поиска назад с
                 целевого элемента пока не будет достигнут элемент, который появляется в следующем
-                более высоком списке. Таким образом, общие ожидаемые затраты на поиск — log1/p (n)/p = O(log(n))
+                более высоком списке. Таким образом, общие ожидаемые затраты на поиск — (log1/p(n))/p = O(log(n))
                 в случае константного p.
              */
             Node<TKey,TValue> currentNode = node;
 
-            // пока не дошли до хвоста и ключ не больше искомого...
-            while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) <= 0)
+            // пока не дошли до хвоста и ключ меньше искомого...
+            while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) < 0)
                 currentNode = currentNode.Next; // переходим к следующему на текущем уровне
 
             if (currentNode.Down == null || (currentNode.Key.CompareTo(key) == 0 && !currentNode.IsEmpty))
@@ -139,7 +139,9 @@ namespace SkipListLib
                 while (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) < 0)
                     currentNode = currentNode.Next;
 
+                // если нашли такой ключ, то...
                 if (currentNode.Next.Key.CompareTo(key) == 0 && !currentNode.Next.IsEmpty)
+                    // бросаем исключение, что такой элемент уже есть
                     throw new ArgumentException("Key must be unique");
 
                 previousItems[i] = currentNode;

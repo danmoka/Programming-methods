@@ -65,7 +65,7 @@ namespace BinaryHeapLib
             int i = Count - 1;
             int parent = Parent(i); // индекс родителя добавленного элемента
 
-            // пока родитель больше добавленного, добавленный "всплывает"
+            // пока родитель меньше добавленного, добавленный "всплывает"
             while (i > 0 && _heap[parent].CompareTo(_heap[i]) < 0)
             {
                 T temp = _heap[i];
@@ -144,5 +144,10 @@ namespace BinaryHeapLib
             foreach (var el in _heap)
                 yield return el;
         }
+
+        //public IEnumerator<T> GetEnumerator()
+        //{
+        //    return _heap.GetEnumerator();
+        //}
     }
 }
