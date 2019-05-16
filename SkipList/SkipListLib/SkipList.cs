@@ -57,6 +57,7 @@ namespace SkipListLib
                                //Эта разреженность наряду с вероятностной природой дает оценку сложности поиска O(log N), — такую же, 
                                //как для бинарных самобалансирующихся деревьев.
         private int _curLevel; // текущей уровень заполненности
+        private int _prevLevel;
         private double _probability; // элемент в i-м слое появляется в i+1-м слое с некоторой фиксированной вероятностью p = _probability. 
                                      // В среднем каждый элемент встречается в 1/(1-p) списках,
         private Random _rd;
@@ -69,6 +70,7 @@ namespace SkipListLib
             _maxLevel = maxLevel;
             _probability = p;
             _curLevel = 0;
+            _prevLevel = 0;
             _rd = new Random();
 
             _head = new Node<TKey, TValue>[_maxLevel];
@@ -159,6 +161,7 @@ namespace SkipListLib
                 for (int i = _curLevel + 1; i <= height; i++)
                     previousItems[i] = _head[i];
 
+                _prevLevel = _curLevel;
                 _curLevel = height;
             }
 
@@ -199,6 +202,14 @@ namespace SkipListLib
         public void Remove(TKey key)
         {
             Remove(_head[_curLevel], key);
+
+            var currentNode = _head[_curLevel];
+            while (currentNode.Next == _tail && currentNode.Down != null)
+            {
+                _curLevel--;
+                currentNode = currentNode.Down;
+            }
+
             Count--;
         }
 
@@ -210,11 +221,12 @@ namespace SkipListLib
                 currentNode = currentNode.Next;
 
             if (currentNode.Down != null)
-                Remove(currentNode.Down, key);
+                Remove(currentNode.Down, key); // удалять нужно до дна 
 
             // перекидываем ссылки
             if (currentNode.Next != _tail && currentNode.Next.Key.CompareTo(key) == 0)
                 currentNode.Next = currentNode.Next.Next;
+            
         }
 
         public void Print()

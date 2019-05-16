@@ -18,37 +18,40 @@ namespace searchAlgorithmsOfSubstring
          * в которой выполняется поиск, m — длина шаблона поиска,
          * s — алфавит, на котором проводится сравнение
          */
-        private string _haystack; // исходный текст
-        private string _needle; // искомая подстрока
+        private string _text; // исходный текст
+        private string _pattern; // искомая подстрока
         private Dictionary<char, int> _stopSymbols; // стоп-символы. Для эвристики хорошего символа
         private int[] _goodSuffix; // хорошие суффиксы. Для эвристики хорошего суффикса
 
         public Boyer_Moore() { }
 
-        public IEnumerable<int> Find(string haystack, string needle)
+        public IEnumerable<int> Find(string text, string pattern)
         {
-            IDictionary<char,int> lambda = ComputeLastOccurrenceFunction(needle);
-            int[] gamma = ComputeGoodSuffixFunction(needle);
-            int stop = haystack.Length - needle.Length + 1;
+            IDictionary<char,int> lambda = ComputeLastOccurrenceFunction(pattern); // вычисляем таблицу стоп-символов
+            int[] gamma = ComputeGoodSuffixFunction(pattern); // вычисляем хорошие суффиксы
+            int stop = text.Length - pattern.Length + 1;
             List<int> res = new List<int>();
 
             int s = 0;
 
             while (s < stop)
             {
-                int j = needle.Length - 1;
+                int j = pattern.Length - 1;
 
-                while ((j > -1) && (needle[j] == haystack[s + j]))
+                while ((j > -1) && (pattern[j] == text[s + j])) // сравниваем справа налево, пока совпадают
                     j--;
 
+                // если полностью совпали
                 if (j == -1)
                 {
                     res.Add(s);
                     s += gamma[0];
                 }
+                // если совпал какой-то символ
                 else
                 {
-                    int lambdaShift = lambda.ContainsKey(haystack[s + j]) ? lambda[haystack[s + j]] : -1;
+                    // выбираем какая эвристика лучше на столько и сдвигаем
+                    int lambdaShift = lambda.ContainsKey(text[s + j]) ? lambda[text[s + j]] : -1;
                     s += Math.Max(gamma[j + 1], j - lambdaShift);
                 }
             }

@@ -24,9 +24,13 @@ namespace BinaryHeapLab
             int n = 10;
             Random rd = new Random();
             Queue<double> goodsWeight = new Queue<double>(); // веса товаров
+            goodsWeight.Enqueue(0.6);
+            goodsWeight.Enqueue(0.3);
+            goodsWeight.Enqueue(0.4);
+            goodsWeight.Enqueue(0.7);
 
-            for (int i = 0; i < n; i++)
-                goodsWeight.Enqueue(Math.Round(rd.NextDouble(), 3));
+            //for (int i = 0; i < n; i++)
+            //    goodsWeight.Enqueue(Math.Round(rd.NextDouble(), 3));
 
             Console.Write("Weights on conveyor: ");
 

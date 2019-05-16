@@ -10,6 +10,7 @@ namespace UnitTests
         [TestMethod]
         public void AddItems()
         {
+            //количество уровней log(1000000) - это примерно 20
             SkipList<int, int> skipList = new SkipList<int, int>(20, 0.5);
             for (int i = 0; i < 1000000; i++)
                 skipList.Add(i, 1);
