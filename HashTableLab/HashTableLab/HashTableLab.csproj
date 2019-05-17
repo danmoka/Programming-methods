@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HashTableLib\HashTableLib.csproj">
+      <Project>{732ABC46-9F7F-4151-A8E4-68C2040A25CE}</Project>
+      <Name>HashTableLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

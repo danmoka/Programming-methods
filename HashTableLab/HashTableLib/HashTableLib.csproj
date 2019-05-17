@@ -43,6 +43,9 @@
   <ItemGroup>
     <Compile Include="HashMaker.cs" />
     <Compile Include="HashTable.cs" />
+    <Compile Include="IHashTable.cs" />
+    <Compile Include="KeyValuePair.cs" />
+    <Compile Include="OpenAddressHashTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
