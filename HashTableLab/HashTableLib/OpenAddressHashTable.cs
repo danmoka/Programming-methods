@@ -52,6 +52,7 @@ namespace HashTableLib
             Count = 0;
         }
 
+        // O(1), в худшем O(N) - когда долго ищем местечко куда вставить
         public void Add(TKey key, TValue value)
         {
             var h = _hashMaker1.GetHash(key);
@@ -110,6 +111,7 @@ namespace HashTableLib
         /// </summary>
         /// <param name="key"> Ключ </param>
         /// <returns> Пара: ключ - значение </returns>
+        /// O(1), в худшем O(N)
         private Pair<TKey, TValue> Find(TKey key)
         {
             var h = _hashMaker1.GetHash(key);
@@ -208,7 +210,7 @@ namespace HashTableLib
             }
         }
 
-
+        // O(N)
         public bool Contains(TKey key)
         {
             int h = _hashMaker1.GetHash(key);

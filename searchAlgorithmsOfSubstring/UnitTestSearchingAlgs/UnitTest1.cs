@@ -13,7 +13,7 @@ namespace UnitTestSearchingAlgs
         public void FindSomeWordsBetweenAlgsTest()
         {
             string sub = "qwerty"; 
-            CollectionAssert.AreEqual(Tester.FindTest(new Boyer_Moore(), sub), Tester.FindTest(new RabinKarp(),sub));
+            CollectionAssert.AreEqual(Tester.FindTest(new Boyer_Moore(), sub), Tester.FindTest(new RabinKarp2(),sub));
         }
 
         [TestMethod]
@@ -25,14 +25,14 @@ namespace UnitTestSearchingAlgs
         [TestMethod]
         public void CheckFindedPositionRabinKarpTest()
         {
-            Assert.AreEqual(4, new RabinKarp().Find(Tester.s, "fikus").First());
+            Assert.AreEqual(4, new RabinKarp2().Find(Tester.s, "fikus").First());
         }
 
         [TestMethod]
         public void NoWordInTextTest()
         {
             string sub = "Фикус";
-            CollectionAssert.AreEqual(Tester.FindTest(new Boyer_Moore(), sub), Tester.FindTest(new RabinKarp(), sub));
+            CollectionAssert.AreEqual(Tester.FindTest(new Boyer_Moore(), sub), Tester.FindTest(new RabinKarp2(), sub));
         }
 
     }

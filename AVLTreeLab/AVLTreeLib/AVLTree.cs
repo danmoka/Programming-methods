@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -142,6 +143,7 @@ namespace AVLTreeLib
         /// <param name="key"> Ключ </param>
         /// <param name="value"> Значение </param>
         /// <returns></returns>
+        /// O(log N)
         private Node<TKey, TValue> Add(Node<TKey, TValue> node, TKey key, TValue value)
         {
             // рекурсивно спускаемся по дереву, пока не найдется место для вставки узла
@@ -183,6 +185,7 @@ namespace AVLTreeLib
             return Balance(node);
         }
 
+        //O(log N)
         private Node<TKey, TValue> Delete(Node<TKey, TValue> node, TKey key)
         {
             if (node == null) return null;
@@ -198,7 +201,7 @@ namespace AVLTreeLib
                 // запоминаем левое и правое поддеревья
                 Node<TKey, TValue> q = node.Left;
                 Node<TKey, TValue> r = node.Right;
-                node = null;
+                //node = null;
 
                 // если правое поддерево пустое, то...
                 if (r == null)
@@ -228,6 +231,7 @@ namespace AVLTreeLib
         /// </summary>
         /// <param name="key"> Ключ </param>
         /// <returns> True, если содержится, иначе - False </returns>
+        /// O (log N)
         public bool Find(TKey key)
         {
             Node<TKey, TValue> node = Root;
@@ -244,5 +248,26 @@ namespace AVLTreeLib
             return false;
         }
 
+        public IEnumerable<KeyValuePair<TKey, TValue>> DoInorderTraversal()
+        {
+            Stack<Node<TKey, TValue>> stack = new Stack<Node<TKey, TValue>>(Count);
+            var current = Root;
+            while (current != null || stack.Count > 0)
+            {
+                while (current != null)
+                {
+                    stack.Push(current);
+                    current = current.Left;
+
+                }
+
+                current = stack.Pop();
+                //Console.WriteLine(current.Key);
+                yield return new KeyValuePair<TKey, TValue>(current.Key, current.Value);
+                current = current.Right;
+
+            }
+
+        }
     }
 }
