@@ -29,8 +29,15 @@ namespace AVLTreeLib
 
     public class AVLTree<TKey, TValue> where TKey : IComparable<TKey>
     {
-        private Node<TKey,TValue> Root { get; set; }
-        public int Count { get; private set; }
+        /*
+         * AVL-дерево представляет собой бинарное дерево (ключ любого узла дерева не меньше любого ключа в левом поддереве данного узла
+         * и не больше любого ключа в правом поддереве этого узла) поиска со
+         * сбалансированной высотой: для каждого узла х высота левого и правого поддеревьев х отличается не более чем на 1.
+         */
+
+        private Node<TKey,TValue> Root { get; set; } // Корневой узел
+        public int Count { get; private set; } // Количество элементов в дереве. Высота и количество элементов связаны формулой 
+                                               // h = O(lg Count)
 
         public AVLTree() { Root = null;  Count = 0; }
 
@@ -59,13 +66,14 @@ namespace AVLTreeLib
         /// O(1)
         private void FixHeight(Node<TKey,TValue> node)
         {
+            // Берется максимум из высот правого и левого поддерева данного узла
             if (node != null)
                 node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
         }
 
         /*
          В процессе добавления или удаления узлов в АВЛ-дереве возможно возникновение ситуации, 
-         когда balance factor некоторых узлов оказывается равными 2 или -2, 
+         когда разница высот поддеревьев некоторых узлов оказывается равными 2 или -2, 
          т.е. возникает расбалансировка поддерева.*/
 
         /// <summary>
@@ -105,7 +113,8 @@ namespace AVLTreeLib
         /// O(1)
         private Node<TKey, TValue> Balance(Node<TKey, TValue> node)
         {
-            // Метод сводится к проверке разницы высот между поддеревьями и выбором поворотов
+            // В ходе добавления узла в дерево может возникнуть "расбалансировка", тогда в зависимости от разницы высот
+            // может потребоваться простые правый или левый повороты, либо простой правый и левый, либо простой левый и правый повороты
             FixHeight(node);
 
             // если высота правого поддерева больше левого на 2, то ...
@@ -147,7 +156,8 @@ namespace AVLTreeLib
         private Node<TKey, TValue> Add(Node<TKey, TValue> node, TKey key, TValue value)
         {
             // рекурсивно спускаемся по дереву, пока не найдется место для вставки узла
-            if (node == null) return new Node<TKey, TValue> (key, value);
+            if (node == null)
+                return new Node<TKey, TValue> (key, value);
 
             if (key.CompareTo(node.Key) < 0) node.Left = Add(node.Left, key, value);
             else node.Right = Add(node.Right, key, value);
@@ -156,11 +166,18 @@ namespace AVLTreeLib
             return Balance(node);
         }
 
+        // Обёртка над методом добавления
         public void Insert(TKey key, TValue value)
         {
             Root = Add(Root, key, value);
             Count++;
         }
+
+        /*
+         * Для того, чтобы удалить узел p с ключом k, надо найти узел с данным ключом k, затем
+         * в правом поддереве найти узел min с наименьшим ключом и заменить удаляемый узел p на найденный узел min.
+         * Грубо говоря, нужно заменить узел p на минимальный узел его правого поддерева.
+         */
 
         /// <summary>
         /// Данный метод ищет узел с минимальный ключем в поддереве данного узла
@@ -177,7 +194,8 @@ namespace AVLTreeLib
         {
             // у минимального элемента справа либо подвешен единственный узел, либо там пусто. 
             // В обоих случаях надо просто вернуть указатель на правый узел и ...
-            if (node.Left == null) return node.Right;
+            if (node.Left == null)
+                return node.Right;
 
             node.Left = RemoveMin(node.Left);
 
@@ -188,7 +206,8 @@ namespace AVLTreeLib
         //O(log N)
         private Node<TKey, TValue> Delete(Node<TKey, TValue> node, TKey key)
         {
-            if (node == null) return null;
+            if (node == null)
+                return null;
 
             // ищем узел с заданным ключом
             if (key.CompareTo(node.Key) < 0)
@@ -211,7 +230,7 @@ namespace AVLTreeLib
 
                 // если правое поддерево непустое, то находим там узел с минимальным ключом
                 Node<TKey, TValue> min = FindMin(r);
-                min.Right = RemoveMin(r); // подвешиваем справа то, что осталось после удаления минимального в правом поддереве
+                min.Right = RemoveMin(r); // подвешиваем справа то, что осталось после извлечения минимального в правом поддереве
                 min.Left = q; // подвешиваем левое поддерево
 
                 return Balance(min);
@@ -236,7 +255,8 @@ namespace AVLTreeLib
         {
             Node<TKey, TValue> node = Root;
 
-            if (node == null) return false;
+            if (node == null)
+                return false;
 
             while (node != null)
             {
@@ -251,18 +271,17 @@ namespace AVLTreeLib
         public IEnumerable<KeyValuePair<TKey, TValue>> DoInorderTraversal()
         {
             Stack<Node<TKey, TValue>> stack = new Stack<Node<TKey, TValue>>(Count);
-            var current = Root;
+            Node<TKey, TValue> current = Root;
+
             while (current != null || stack.Count > 0)
             {
                 while (current != null)
                 {
                     stack.Push(current);
                     current = current.Left;
-
                 }
 
                 current = stack.Pop();
-                //Console.WriteLine(current.Key);
                 yield return new KeyValuePair<TKey, TValue>(current.Key, current.Value);
                 current = current.Right;
 

@@ -12,37 +12,32 @@ namespace searchAlgorithmsOfSubstring
     {
         static void Main(string[] args)
         {
-            RabinKarp2 karp2 = new RabinKarp2();
-            IEnumerable<int> vs = karp2.Find("abccsgggdsbcc", "bcc");
-            foreach( var el in vs)
-                Console.WriteLine(el);
+            Stopwatch timer = new Stopwatch();
 
-            //Stopwatch timer = new Stopwatch();
+            IStringSearcher rabin_Karp = new RabinKarp2();
+            IStringSearcher boyer_Moor = new Boyer_Moore();
 
-            //IStringSearcher rabin_Karp = new RabinKarp();
-            //IStringSearcher boyer_Moor = new Boyer_Moore();
+            string anna = string.Empty;
 
-            //string anna = string.Empty;
+            using (StreamReader reader = new StreamReader("anna.txt"))
+            {
+                anna = reader.ReadToEnd();
+            }
 
-            //using (StreamReader reader = new StreamReader("anna.txt"))
-            //{
-            //    anna = reader.ReadToEnd();
-            //}
+            timer.Start();
+            IEnumerable<int> resRK = rabin_Karp.Find(anna, "Анна");
+            timer.Stop();
+            var timeRK = timer.ElapsedMilliseconds;
 
-            //timer.Start();
-            //IEnumerable<int> resRK = rabin_Karp.Find(anna, "Анна");
-            //timer.Stop();
-            //var timeRK = timer.ElapsedMilliseconds;
+            timer.Reset();
+            timer.Start();
+            IEnumerable<int> resBM = boyer_Moor.Find(anna, "Анна");
+            timer.Stop();
 
-            //timer.Reset();
-            //timer.Start();
-            //IEnumerable<int> resBM = boyer_Moor.Find(anna, "Анна");
-            //timer.Stop();
+            var timeBM = timer.ElapsedMilliseconds;
 
-            //var timeBM = timer.ElapsedMilliseconds;
-
-            //Console.WriteLine($"Бойер-Мур: время: {timeBM} | вхождения: {resBM.Count()}\n" +
-            //    $"Рабин-Карп время: {timeRK} | вхождения: {resRK.Count()}");
+            Console.WriteLine($"Бойер-Мур: время: {timeBM} | вхождения: {resBM.Count()}\n" +
+                $"Рабин-Карп время: {timeRK} | вхождения: {resRK.Count()}");
         }
     }
 }
