@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HashTableLib
 {
     /// <summary>
-    /// Класс - родитель двух классов хэш - функций
+    /// Класс - хэш - функция
     /// </summary>
     /// <typeparam name="T"></typeparam>
     internal class HashMaker<T>

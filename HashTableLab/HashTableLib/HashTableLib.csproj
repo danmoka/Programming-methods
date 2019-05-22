@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HashMaker.cs" />
-    <Compile Include="HashTable.cs" />
     <Compile Include="IHashTable.cs" />
     <Compile Include="KeyValuePair.cs" />
     <Compile Include="OpenAddressHashTable.cs" />

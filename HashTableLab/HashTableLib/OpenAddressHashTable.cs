@@ -18,20 +18,17 @@ namespace HashTableLib
             private set { _capacity = value; }
         }
 
-        private HashMaker<TKey> _hashMaker1, _hashMaker2;
+        private HashMaker<TKey> _hashMaker1, _hashMaker2; // хэш-функции
         public int Count { get; private set; } // заполненность
-        private const double FillFactor = 0.85;
-        private readonly int[] numbers = new int[20] {
+        private const double FillFactor = 0.85; // определяет, когда нужно увеличивать размер таблицы
+        private readonly int[] _sizes = new int[20] {
             373, 877, 2791, 4447,
             9241, 19927, 35317,
             50023, 80039, 250013,
             499973, 999979, 5000077,
             8999993, 15000017, 29999989,
             55999997, 111999997, 223999879, 1999999927 };
-        private int _sizeIndex = 0;
-
-        //public OpenAddressHashTable() : this(9973)
-        //{ }
+        private int _sizeIndex = 0; // определяет индекс элемента из массива размеров таблицы
 
         public OpenAddressHashTable(int size)
         {
@@ -44,7 +41,7 @@ namespace HashTableLib
 
         public OpenAddressHashTable()
         {
-            int size = numbers[_sizeIndex];
+            int size = _sizes[_sizeIndex];
             _capacity = size;
             table = new Pair<TKey, TValue>[size];
             _hashMaker1 = new HashMaker<TKey>(_capacity);
@@ -59,12 +56,15 @@ namespace HashTableLib
 
             if (!TryToPut(h, key, value)) // ячейка занята
             {
+                // двойное исследование
                 int iterationNumber = 1;
                 while (true)
                 {
                     var place = (h + iterationNumber * (1 + _hashMaker2.GetHash(key))) % _capacity;
 
+                    // пробуем вставить, есои успешно, то...
                     if (TryToPut(place, key, value))
+                        // выходим из двойного исследования
                         break;
 
                     iterationNumber++;
@@ -115,18 +115,23 @@ namespace HashTableLib
         private Pair<TKey, TValue> Find(TKey key)
         {
             var h = _hashMaker1.GetHash(key);
+            // если по ключу, значение null
             if (table[h] == null)
                 return null;
 
+            // если элемент не помечен как удаленный и ключи совпадают, то...
             if (!table[h].IsDeleted() && table[h].Key.Equals(key))
             {
+                // возвращаем элемент
                 return table[h];
             }
 
+            // остается проверить вариант, когда пара в ходе двойного исследования лежит в другом месте
             int iterationNumber = 1;
 
             while (true)
             {
+                // двойное исследование
                 var place = (h + iterationNumber * (1 + _hashMaker2.GetHash(key))) % _capacity;
 
                 if (table[place] == null)
@@ -150,7 +155,7 @@ namespace HashTableLib
         /// <returns> Значение </returns>
         public TValue this[TKey key]
         {
-            get { return Find(key).Value; } // Метод Find возвращает значение
+            get { return Find(key).Value; } // возвращает значение
 
             set
             {
@@ -194,7 +199,7 @@ namespace HashTableLib
         private void IncreaseTable()
         {
             _sizeIndex++;
-            int size = numbers[_sizeIndex];
+            int size = _sizes[_sizeIndex];
             _capacity = size;
             _hashMaker1 = new HashMaker<TKey>(_capacity);
             _hashMaker2 = new HashMaker<TKey>(_capacity - 1);
@@ -217,6 +222,7 @@ namespace HashTableLib
 
             if (table[h] == null)
                 return false;
+
             if (!table[h].IsDeleted() && table[h].Key.Equals(key))
             {
                 return true;
