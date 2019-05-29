@@ -18,10 +18,6 @@ namespace searchAlgorithmsOfSubstring
          * в которой выполняется поиск, m — длина шаблона поиска,
          * s — алфавит, на котором проводится сравнение
          */
-        private string _text; // исходный текст
-        private string _pattern; // искомая подстрока
-        private Dictionary<char, int> _stopSymbols; // стоп-символы. Для эвристики хорошего символа
-        private int[] _goodSuffix; // хорошие суффиксы. Для эвристики хорошего суффикса
 
         public Boyer_Moore() { }
 
@@ -97,9 +93,9 @@ namespace searchAlgorithmsOfSubstring
              * то эвристика совпавшего суффикса сдвигает шаблон на наименьшее число позиций вправо так, чтобы строка S совпала с шаблоном,
              * а символ, предшествующий в шаблоне данному совпадению S, отличался бы от b (если такой символ вообще есть).*/
 
-            int[] p = ComputePrefix(str);
+            int[] p = ComputePrefix(str); // префиксы подстроки
 
-            int[] pRev = ComputePrefix(ReverseString(str));
+            int[] pRev = ComputePrefix(ReverseString(str)); // префиксы перевернутой подстроки
 
             int[] valuesForShift = new int[str.Length + 1];
 

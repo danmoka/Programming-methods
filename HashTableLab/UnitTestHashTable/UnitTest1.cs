@@ -54,5 +54,19 @@ namespace UnitTestHashTable
             Assert.IsFalse(result);
             Assert.IsTrue(resultTrue);
         }
+
+        [TestMethod]
+        public void CollissionTest()
+        {
+            OpenAddressHashTable<int, int> hashTable = new OpenAddressHashTable<int, int>();
+            hashTable.Add(1, 1);
+            hashTable.Add(374, 374);
+            hashTable.Add(5, 5);
+            hashTable.Add(2, 2);
+
+            hashTable.Remove(1);
+
+            Assert.IsTrue(hashTable.Contains(374));
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace AVLTreeLib
 
         private Node<TKey,TValue> Root { get; set; } // Корневой узел
         public int Count { get; private set; } // Количество элементов в дереве. Высота и количество элементов связаны формулой 
-                                               // h = O(lg Count)
+                                               // h = O(log Count)
 
         public AVLTree() { Root = null;  Count = 0; }
 
@@ -268,7 +268,7 @@ namespace AVLTreeLib
             return false;
         }
 
-        public IEnumerable<KeyValuePair<TKey, TValue>> DoInorderTraversal()
+        public IEnumerable<KeyValuePair<TKey, TValue>> Elements()
         {
             Stack<Node<TKey, TValue>> stack = new Stack<Node<TKey, TValue>>(Count);
             Node<TKey, TValue> current = Root;
@@ -277,7 +277,7 @@ namespace AVLTreeLib
             {
                 while (current != null)
                 {
-                    stack.Push(current);
+                    stack.Push(current);12ne robit looooooooooool
                     current = current.Left;
                 }
 
